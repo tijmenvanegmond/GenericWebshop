@@ -3,6 +3,7 @@
 }
 
 <div class="row">
+
     <div class="col-md-12">
         <h2>Getting started</h2>
         <p>
@@ -10,9 +11,33 @@
             enables a clean separation of concerns and gives you full control over markup
             for enjoyable, agile development.
         </p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+        <p>
+            <a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a>
+        </p>
+
     </div>
-   
+    <form class="form-inline">
+        <div class="form-group">
+            <label for="sel1">Select order:</label>
+            <select class="form-control" id="sel1">
+                @foreach (var prop in (List<string>)ViewData["properties"])
+                {
+                    <option>@prop</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="sel2">Select multiple categories (hold shift to select more than one):</label>
+            <select multiple class="form-control" id="sel2">
+                @foreach (var cat in (List<KeyValuePair<int, string>>)ViewData["categories"])
+                {
+                    <option value="@cat.Key">@cat.Value</option>
+                }
+            </select>
+            <button type="button" class="btn btn-default">Default</button>
+        </div>
+
+    </form>
 </div>
 
 @section Scripts
@@ -20,26 +45,24 @@
     <script type="text/javascript">
         FetchItems();
 
-        function FetchItems() {
+        function FetchItems(data) {
             $.ajax({
                 method: "GET",
+                data: data,
                 url: "http://localhost:65359/api/items"
             }).success(function (data) {
-                ShowData(data);
+                ShowItems(data);
             });
         }
-        function ShowData(data) {
+
+        function ShowItems(data) {
             console.log(data);
             for (var i = 0; i < data.length; i++) {
-                AppendItem(data[i]);
+                $('.row').append(CreateItemNode(data[i]));
             }
         }
-        function AppendItem(item) {
-            items.Categories.forEach();
-            for (var i = 0; i < item.Categories.length; i++) {
-                
-            }
 
+        function CreateItemNode(item) {
             var div = $("<div></div>");
             div.addClass("col-md-4");
             var title = $("<h2></h2>").text(item.Title);
@@ -47,11 +70,18 @@
             div.append(title);
             div.append(description);
 
-            $('.row').append(div);
+            for (var i = 0; i < item.Categories.length; i++) {
+                div.append(CreateCategoryLinkNode(item.Categories[i]));
+            }
+
+            return div;
         }
 
-        
-
+        function CreateCategoryLinkNode(category) {
+            var cat = $("<a></a>").text(category.Title);
+            cat.attr('href', "/categories/Details/" + category.Id);
+            return cat;
+        }
 
     </script>
 }
