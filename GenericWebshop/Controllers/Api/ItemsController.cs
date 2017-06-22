@@ -14,9 +14,15 @@ using GenericWebshop.Models;
 
 namespace GenericWebshop.Controllers.Api
 {
-    //from: https://stackoverflow.com/questions/41244/dynamic-linq-orderby-on-ienumerablet
+
     public static class PropertyStringSorting
     {
+        /// /// <summary>
+        /// Allows sorting by propertyName string
+        /// taken from:
+        /// https://stackoverflow.com/questions/41244/dynamic-linq-orderby-on-ienumerablet
+        /// Marc Gravell & Poke
+        /// </summary>
         public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> source, string property)
         {
             return ApplyOrder<T>(source, property, "OrderBy");
@@ -70,10 +76,14 @@ namespace GenericWebshop.Controllers.Api
             return db.Items;
         }
 
-        // GET: api/Items/price
-        public IQueryable<Item> GetItems(string orderBy)
+        // GET: api/Items?orderBy=Price&category=1
+        public IQueryable<Item> GetItems(string orderBy, int? categoryId = null)
         {
-            return db.Items.OrderBy(orderBy);
+            IQueryable<Item> items = db.Items;
+            if (categoryId != null)
+                items = items.Where(i => i.Categories.Any(c => c.Id == categoryId));
+
+            return items.OrderBy(orderBy);
         }
 
         // GET: api/Items/5
