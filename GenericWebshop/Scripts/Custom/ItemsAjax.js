@@ -22,6 +22,28 @@ function ShowItems(data) {
     }
 }
 
+function AddToCart(ItemId) {
+    var orderItem = {
+        "Orders_Id": 1,
+        "Items_Id": Number(ItemId),
+        "Amount": 1
+    };
+
+    $.ajax({
+        method: "Post",
+        data: orderItem,
+        url: "http://localhost:65359/api/cart/1"
+    })
+    .done(function () {
+        ShowAlert('success', 'Item added to cart');
+    })
+    .fail(function () {
+        ShowAlert('danger', 'Failed to add item to cart');
+    });
+
+}
+
+
 function CreateItemCard(item) {
     var panel = $("<div />", {
         class: "panel panel-default col-md-04"
@@ -52,9 +74,10 @@ function CreateItemCard(item) {
         class: "list-group-item"
     }).appendTo(list);
 
-    var CartBtn = $("<button/>",{
-            class: "btn btn-default",
-            text: "Add to Cart "
+    var CartBtn = $("<button/>", {
+        class: "btn btn-default",
+        text: "Add to Cart ",
+        onClick: 'AddToCart(' + item.Id + ')'
     }).appendTo(panelBody);
     $("<span />", {
         class: "glyphicon glyphicon-shopping-cart"

@@ -42,7 +42,14 @@ function DeleteItem(orderItem) {
         method: "Delete",
         data: orderItem,
         url: "http://localhost:65359/api/cart/1"
-    }).success(RemoveRow(orderItem.Items_Id));
+    })
+    .done(function () {
+            RemoveRow(orderItem.Items_Id);
+            ShowAlert('info', 'successfully removed an item from cart');
+        })
+    .fail(function () {
+        ShowAlert('danger', 'Failed to remove item from cart');
+    });
 }
 
 function RemoveRow(id) {

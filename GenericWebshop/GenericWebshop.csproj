@@ -262,6 +262,7 @@
       <DependentUpon>DastabaseModel.edmx</DependentUpon>
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\Custom\AlertHandler.js" />
     <Content Include="Scripts\Custom\CartAjax.js" />
     <Content Include="Scripts\Custom\ItemsAjax.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
