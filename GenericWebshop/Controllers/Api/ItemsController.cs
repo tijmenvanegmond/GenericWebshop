@@ -79,12 +79,21 @@ namespace GenericWebshop.Controllers.Api
         // GET: api/Items?orderBy=Price&category=1
         public IQueryable<Item> GetItems(string orderBy, int? categoryId = null)
         {
+            return GetItems(orderBy, null, categoryId);
+        }
+
+        // GET: api/Items?orderBy=Price&category=1&searchTerm=shoe
+        public IQueryable<Item> GetItems(string orderBy, string searchTerm, int? categoryId = null)
+        {
             IQueryable<Item> items = db.Items;
+            if (searchTerm !=null)
+                items = items.Where(i => i.Title.Contains(searchTerm) || i.Description.Contains(searchTerm));
             if (categoryId != null)
                 items = items.Where(i => i.Categories.Any(c => c.Id == categoryId));
 
             return items.OrderBy(orderBy);
         }
+
 
         // GET: api/Items/5
         [ResponseType(typeof(Item))]

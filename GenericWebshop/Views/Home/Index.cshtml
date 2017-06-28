@@ -2,12 +2,16 @@
     ViewBag.Title = "Home Page";
 }
 
-<div class="row">
-    <form class="form-inline col-md-12" id="filters">
+<div class="container">
+    <form class="form-inline col-md-12" style="margin-top: 1em;margin-bottom: 1em" id="filters">
+        <div class="form-group">
+            <label for="searchTerm">Search:</label>
+            <input class="form-control" id="searchTerm" name="searchTerm">
+        </div>
         <div class="form-group">
             <label for="orderBy">Select order:</label>
             <select class="form-control" id="orderBy" name="orderBy">
-                @foreach (var prop in (List<string>)ViewData["properties"])
+                @foreach (var prop in (List<string>) ViewData["properties"])
                 {
                     <option>@prop</option>
                 }
@@ -17,90 +21,35 @@
             <label for="category">Select category:</label>
             <select class="form-control" id="category" name="categoryId">
                 <option value="default" selected="selected">All</option>
-                @foreach (var cat in (List<KeyValuePair<int, string>>)ViewData["categories"])
+                @foreach (var cat in (List<KeyValuePair<int, string>>) ViewData["categories"])
                 {
                     <option value="@cat.Key">@cat.Value</option>
                 }
             </select>
         </div>
-        <button type="button" class="btn btn-default" onclick="RequestFilters()">Apply Filter</button>
     </form>
-
-    <div class=" col-md-12" id="itemWrap">
+    <div class="col-md-12" id="itemWrap">
     </div>
 
 </div>
 
 @section Scripts
 {
+    <script src="~/Scripts/Custom/ItemsAjax.js"></script>
     <script type="text/javascript">
+        
         FetchItems();
 
-        function RequestFilters() {
-            var form = $("#filters");
-            console.log(form.serialize());
-            FetchItems(form.serialize());
-        }
-
-        function FetchItems(queryString) {
-            $.ajax({
-                method: "GET",
-                data: queryString,
-                url: "http://localhost:65359/api/items"
-            }).success(function (data) {
-                ShowItems(data);
-            });
-        }
-
-        function ShowItems(data) {
-            var wrap = $('#itemWrap');
-            wrap.empty();
-            for (var i = 0; i < data.length; i++) {
-                wrap.append(CreateItemCard(data[i]));
-            }
-        }
-
-        function CreateItemCard(item) {
-            var panel = $('<div />', {
-                "class": 'panel panel-default col-md-04'
-            });
-            var panelBody = $("<div />", {
-                'class': "panel-body"
-            }).appendTo(panel);
-            $("<h2/>", {
-                "class": 'panel-title',
-                'text': item.Title
-            }).appendTo(panelBody);
-            $("<p></p>").text(item.Description).appendTo(panelBody);
-            var list = $('<ul/>',
-            {
-                "class": 'list-group list-group-flush'
-            }).appendTo(panel);
-            $('<li/>',
-            {
-                "class": 'list-group-item',
-                'text': "€" + item.Price
-            }).appendTo(list);
-            $('<li/>', {
-                "class": 'list-group-item',
-                'text': item.InStock + " in stock"
-            }).appendTo(list);
-            var catLI = $('<li/>', {
-                "class": 'list-group-item'
-            }).appendTo(list);
-
-            for (var i = 0; i < item.Categories.length; i++) {
-                catLI.append(CreateCategoryLinkNode(item.Categories[i]));
-            }
-
-            return panel;
-        }
-
-        function CreateCategoryLinkNode(category) {
-            var cat = $("<a></a>").text(category.Title);
-            cat.attr('href', "/categories/Details/" + category.Id);
-            return cat;
-        }
-
+        $("#filters").submit(function (e) {
+            e.preventDefault();
+        });
+        $("#filters select").change(function () {
+            console.log("Form input changed");
+            RequestFilters();
+        });
+        $("#searchTerm").keyup(function () {
+            console.log("searchTerm changed");
+            RequestFilters();
+        });
     </script>
 }

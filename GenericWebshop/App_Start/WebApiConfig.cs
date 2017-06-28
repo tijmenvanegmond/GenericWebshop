@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using System.Web.Mvc;
 
 namespace GenericWebshop
 {
@@ -15,6 +16,12 @@ namespace GenericWebshop
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
+            );
+            //TODO does not seem to work
+            config.Routes.MapHttpRoute(
+                name: "CartAction",
+                routeTemplate: "api/{controller}/{action}/{id}",
+                defaults: new {controller = "Cart", action = "Index", id = UrlParameter.Optional}
             );
         }
     }

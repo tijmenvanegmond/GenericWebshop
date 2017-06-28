@@ -26,6 +26,10 @@ namespace GenericWebshop
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
+
+            //Custom
+            bundles.Add(new ScriptBundle("~/bundles/custom").Include(
+                "~/Scripts/Custom/ItemsAjax.js"));
         }
     }
 }
