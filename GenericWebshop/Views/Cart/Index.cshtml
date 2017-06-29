@@ -32,8 +32,8 @@
                             <td class="col-sm-1 col-md-1" style="text-align: center">
                                 <input type="number" style="width: 8rem" class="form-control amount" id="@orderItem.Item.Id" value="@orderItem.Amount">
                             </td>
-                            <td class="col-sm-1 col-md-1 text-center"><strong>€@(orderItem.Item.Price/100)</strong></td>
-                            <td class="col-sm-1 col-md-1 text-center total-price"><strong>€@(orderItem.Item.Price * orderItem.Amount/100)</strong></td>
+                            <td class="col-sm-1 col-md-1 text-center price"><strong>€@(orderItem.Item.Price.ToString().TrimEnd('0').TrimEnd('.'))</strong></td>
+                            <td class="col-sm-1 col-md-1 text-center total-price"><strong>€@((orderItem.Item.Price * orderItem.Amount).ToString().TrimEnd('0').TrimEnd('.')) </strong></td>
                             <td class="col-sm-1 col-md-1">
                                 <button type="button" class="btn btn-danger" onclick="DeleteItemAction(@orderItem.Items_Id)">
                                     <span class="glyphicon glyphicon-remove"></span> Remove
@@ -46,19 +46,19 @@
                         <td>   </td>
                         <td>   </td>
                         <td><h3>Total</h3></td>
-                        <td class="text-right"><h3><strong>$31.53</strong></h3></td>
+                        <td class="text-right"><h3><strong id ="total">€@ViewData["total"]</strong></h3></td>
                     </tr>
                     <tr>
                         <td>   </td>
                         <td>   </td>
                         <td>   </td>
                         <td>
-                            <button type="button" class="btn btn-default">
+                            <a class="btn btn-default" href="/">
                                 <span class="glyphicon glyphicon-shopping-cart"></span> Continue Shopping
-                            </button>
+                            </a>
                         </td>
                         <td>
-                            <button type="button" class="btn btn-success">
+                            <button type="button" class="btn btn-success" onclick="ShowAlert('info','checkout not implemented')">
                                 Checkout <span class="glyphicon glyphicon-play"></span>
                             </button>
                         </td>
@@ -73,5 +73,6 @@
 {
 <script src="~/Scripts/Custom/CartAjax.js"></script>
     <script type="text/javascript">
+        setInterval(UpdatePrices, 100);
     </script>
 }

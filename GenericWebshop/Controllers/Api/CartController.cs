@@ -38,13 +38,13 @@ namespace GenericWebshop.Controllers.Api
             if (id != orderItem.Orders_Id || orderItem.Amount < 0 )
                 return BadRequest();
 
-            var order = db.Orders.FirstOrDefault(x => x.Id == id);
+            var order = db.Orders.Find(id);
 
-            if (order == null || order.Status > 10)
+            if (order == null || order.Status > 10) //order status lower than 10 means it has not yet been paid
                 return BadRequest();
             
             if (order.OrderItems.Any(x => x.Items_Id == orderItem.Items_Id)) //update
-                order.OrderItems.First(x => x.Items_Id == orderItem.Items_Id).Amount = orderItem.Amount;
+                order.OrderItems.First(x => x.Items_Id == orderItem.Items_Id).Amount += orderItem.Amount;
             else //add
                 order.OrderItems.Add(orderItem);
             
@@ -67,7 +67,46 @@ namespace GenericWebshop.Controllers.Api
             return Ok(orderItem);
         }
 
-        //// Delete: api/Cart/CartItem/{id} 
+        // Post: api/Cart/1
+        [ResponseType(typeof(void))]
+        public IHttpActionResult PutCartItem(int id, OrderItem orderItem)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (id != orderItem.Orders_Id || orderItem.Amount < 0)
+                return BadRequest();
+
+            var order = db.Orders.Find(id);
+
+            if (order == null || order.Status > 10) //order status lower than 10 means it has not yet been paid
+                return BadRequest();
+
+            if (order.OrderItems.Any(x => x.Items_Id == orderItem.Items_Id)) //update
+                order.OrderItems.First(x => x.Items_Id == orderItem.Items_Id).Amount = orderItem.Amount;
+            else
+                BadRequest("Items not in Cart");
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!OrderExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return Ok(orderItem);
+        }
+
+        // Delete: api/Cart/CartItem/{id} 
         [ResponseType(typeof(void))]
         public IHttpActionResult DeleteCartItem(int id, OrderItem orderItem)
         {

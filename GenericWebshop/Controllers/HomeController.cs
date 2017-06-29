@@ -13,12 +13,11 @@ namespace GenericWebshop.Controllers
 
         public ActionResult Index()
         {
-            var categories = db.Categories.ToList().Select(x => new KeyValuePair<int, string>(x.Id, x.Title)).ToList();
+            var categories = db.Categories.ToList().Select(x => new KeyValuePair<int, string>(x.Id, x.Title+" - "+x.Items.Count)).ToList();
             var properties = typeof(Item).GetProperties().Select(p => p.Name).ToList();
             ViewData.Add("categories", categories);
             ViewData.Add("properties", properties);
             return View();
         }
-        
     }
 }
