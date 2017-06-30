@@ -44,11 +44,9 @@
             e.preventDefault();
         });
         $("#filters select").change(function () {
-            console.log("Form input changed");
             RequestFilters();
         });
         $("#searchTerm").keyup(function () {
-            console.log("searchTerm changed");
             RequestFilters();
         });
     </script>

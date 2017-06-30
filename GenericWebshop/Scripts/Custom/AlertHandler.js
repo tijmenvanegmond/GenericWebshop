@@ -8,5 +8,5 @@ function ShowAlert(type, message) {
     }).hide();
 
     $(".navbar > .container").append(alert);
-    $(alert).slideDown(250).delay(1000).slideUp(250, function(){$(alert).remove()});
+    $(alert).slideDown(200).delay(1500).slideUp(200, function(){$(alert).remove()});
 }

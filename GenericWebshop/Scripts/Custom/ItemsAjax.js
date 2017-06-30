@@ -1,6 +1,5 @@
 ﻿function RequestFilters() {
     var form = $("#filters");
-    console.log(form.serialize());
     FetchItems(form.serialize());
 }
 
@@ -9,9 +8,12 @@ function FetchItems(queryString) {
         method: "GET",
         data: queryString,
         url: "http://localhost:65359/api/items"
-    }).success(function (data) {
+    }) .done(function (data) {
         ShowItems(data);
-    });
+        })
+        .fail(function () {
+            ShowAlert("warning", 'Something went frong fetching items');
+        });
 }
 
 function ShowItems(data) {
